@@ -27,13 +27,20 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import com.appodeal.ads.NativeIconView;
 import com.appodeal.ads.NativeMediaView;
 import com.bumptech.glide.Glide;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AudienceNetworkAds;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.willdev.openvpn.R;
 import com.willdev.openvpn.api.WebAPI;
 import com.willdev.openvpn.model.Server;
 import com.startapp.sdk.ads.banner.Banner;
+import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
@@ -48,6 +55,7 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
     private int AD_TYPE = 0;
     private int CONTENT_TYPE = 1;
     private com.appodeal.ads.NativeAd nativeAd;
+    private com.facebook.ads.AdView facebookAdview;
 
     public FreeServerAdapter(Context context, com.appodeal.ads.NativeAd nativeAd) {
         this.mContext = context;
@@ -63,11 +71,25 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
 
         if (viewType == AD_TYPE) {
 
-            if(WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_ADMOB) || WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_FACEBOOK_ADS)) {
-
+            if(WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_ADMOB)) {
+                Log.v("ADMOBAD", "true");
                 adview = new AdView(mContext);
                 adview.setAdSize(AdSize.BANNER);
                 adview.setAdUnitId(WebAPI.ADMOB_BANNER);
+                adview.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        super.onAdFailedToLoad(loadAdError);
+
+                        Log.e("ADMOBAD", "error: " + loadAdError);
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        Log.v("ADMOBAD", "ad loaded");
+                    }
+                });
                 float density = mContext.getResources().getDisplayMetrics().density;
                 int height = Math.round(AdSize.BANNER.getHeight() * density);
                 AbsListView.LayoutParams params = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, height);
@@ -75,6 +97,36 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
                 AdRequest request = new AdRequest.Builder().build();
                 adview.loadAd(request);
                 return new MyViewHolder(adview);
+
+            } else if (WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_FACEBOOK_ADS)) {
+                Log.v("FACEBOOKAD", "true");
+                mainLayout = new RelativeLayout(mContext);
+                AdSettings.addTestDevice("06518f22-9f3f-40f4-97bc-f91ae11087e2");
+                AudienceNetworkAds.initialize(mContext);
+                facebookAdview = new com.facebook.ads.AdView(mContext, WebAPI.ADMOB_BANNER, com.facebook.ads.AdSize.BANNER_HEIGHT_50);
+                mainLayout.addView(facebookAdview);
+
+                com.facebook.ads.AdListener adListener = new
+                        com.facebook.ads.AdListener() {
+                            public void onError(Ad ad, AdError adError) {
+                                Log.d("FACEBOOKAD", adError.getErrorMessage());
+                            }
+
+                            public void onAdLoaded(Ad ad) {
+
+                            }
+
+                            public void onAdClicked(Ad ad) {
+
+                            }
+
+                            public void onLoggingImpression(Ad ad) {
+
+                            }
+                        };
+
+                facebookAdview.loadAd(facebookAdview.buildLoadAdConfig().withAdListener(adListener).build());
+                return new MyViewHolder(mainLayout);
 
             } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_STR)) {
 
@@ -89,11 +141,9 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
                 mainLayout.addView(startAppBanner, bannerParameters);
                 return new MyViewHolder(mainLayout);
 
-           } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+           } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
                 mainLayout = new RelativeLayout(mContext);
-                BannerView banner = new BannerView((Activity) mContext, WebAPI.ADMOB_BANNER, new UnityBannerSize(320, 50));
-                banner.load();
 
                 RelativeLayout.LayoutParams bannerParameters =
                         new RelativeLayout.LayoutParams(
@@ -101,7 +151,33 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
                 bannerParameters.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 bannerParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                mainLayout.addView(banner, bannerParameters);
+
+                BannerView bottomBanner = new BannerView((Activity) mContext, "bannerads", new UnityBannerSize(320, 50));
+                bottomBanner.setListener(new BannerView.IListener() {
+                    @Override
+                    public void onBannerLoaded(BannerView bannerView) {
+                        Log.v("CHECKUNITY", " banner ad loaded");
+                    }
+
+                    @Override
+                    public void onBannerClick(BannerView bannerView) {
+
+                    }
+
+                    @Override
+                    public void onBannerFailedToLoad(BannerView bannerView, BannerErrorInfo bannerErrorInfo) {
+                        Log.v("CHECKUNITY", "error " + bannerErrorInfo.errorMessage);
+                    }
+
+                    @Override
+                    public void onBannerLeftApplication(BannerView bannerView) {
+
+                    }
+                });
+                bottomBanner.load();
+                mainLayout.addView(bottomBanner, bannerParameters);
+
+
                 return new MyViewHolder(mainLayout);
 
             } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APV)) {
@@ -168,7 +244,7 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
 
                 return new MyViewHolder(mainLayout);
             }
-            else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+            else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
                 mainLayout = new RelativeLayout(mContext);
 
@@ -271,6 +347,9 @@ public class FreeServerAdapter extends RecyclerView.Adapter<FreeServerAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        Log.v("CHECKCOUNT", position + " " + serverLists.size());
+
         if(getItemViewType(position) == CONTENT_TYPE){
             holder.serverCountry.setText(serverLists.get(position).getCountry());
             Glide.with(mContext)

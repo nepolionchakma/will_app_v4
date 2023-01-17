@@ -3,7 +3,7 @@ include ':SmoothCheckBox-masterr'
 include ':SmoothCheckBox-masterr'
 include ':imagepickerr'
 include ':Wheell'
-include ':app', ':vpnLib'
+include ':app'
 project(':imagepickerr').projectDir = new File(rootDir, 'imagepicker/')
 project(':SmoothCheckBox-masterr').projectDir = new File(rootDir, 'SmoothCheckBox-master/')
 project(':IRBottomNavigationLibb').projectDir = new File(rootDir, 'IRBottomNavigationLib/')

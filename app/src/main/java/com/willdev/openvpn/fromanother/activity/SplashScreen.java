@@ -50,6 +50,7 @@ import cz.msebera.android.httpclient.Header;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import top.oneconnectapi.app.api.OneConnect;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -90,73 +91,6 @@ public class SplashScreen extends AppCompatActivity {
 
         setContentView(R.layout.activity_splace_screen);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            OkHttpClient okHttpClient = new OkHttpClient();
-                            Request request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?freeServers").build();
-                            Response response = okHttpClient.newCall(request).execute();
-                            WebAPI.FREE_SERVERS = response.body().string();
-
-                            request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?proServers").build();
-                            response = okHttpClient.newCall(request).execute();
-                            WebAPI.PREMIUM_SERVERS = response.body().string();
-
-                            request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?admob").build();
-                            response = okHttpClient.newCall(request).execute();
-                            String body = response.body().string();
-                            try {
-                                JSONArray jsonArray = new JSONArray(body);
-                                for (int i=0; i < jsonArray.length();i++){
-                                    JSONObject object = (JSONObject) jsonArray.get(0);
-                                    WebAPI.ADMOB_ID = object.getString("admobID");
-                                    WebAPI.ADMOB_BANNER = object.getString("bannerID");
-                                    WebAPI.ADMOB_INTERSTITIAL = object.getString("interstitialID");
-                                    WebAPI.ADMOB_NATIVE = object.getString("nativeID");
-                                    WebAPI.ADMOB_REWARD_ID = object.getString("rewardID");
-                                    WebAPI.ADS_TYPE = object.getString("adType");
-
-                                }
-                                try {
-                                    ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                                    Bundle bundle = applicationInfo.metaData;
-                                    applicationInfo.metaData.putString("com.google.android.gms.ads.APPLICATION_ID",WebAPI.ADMOB_ID);
-                                    String apiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
-                                    Log.d("AppID","The saved id is "+WebAPI.ADMOB_ID);
-                                    Log.d("AppID","The saved id is "+apiKey);
-                                } catch (PackageManager.NameNotFoundException e) {
-                                    e.printStackTrace();
-                                }catch (NullPointerException e){
-                                    e.printStackTrace();
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        } catch (IOException e) {
-                            Log.v("Kabila",e.toString());
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-                try {
-                    Log.v("SERVER_API",WebAPI.FREE_SERVERS);
-                    Thread.sleep(3000);
-                    Log.v("SERVER_API","after "+WebAPI.FREE_SERVERS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        },1000);
-
-
-
-
 
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -166,7 +100,7 @@ public class SplashScreen extends AppCompatActivity {
         changeStatusBarColor();
 
         progressBar = findViewById(R.id.progressBar_splash_screen);
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -222,17 +156,121 @@ public class SplashScreen extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                splashScreen();
+                fetchServerData();
             }
 
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-                splashScreen();
+                fetchServerData();
             }
 
         });
     }
+
+
+    public void fetchServerData() {
+        Handler mHandler = new Handler();;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    Request request;
+                    Response response;
+
+                    request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?oneConnect").build();
+                    response = okHttpClient.newCall(request).execute();
+                    //Log.v("CHECKONECONNECT", response.peekBody(2048).string());
+
+                    String oneConnectData = response.peekBody(2048).string();
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(oneConnectData);
+                        String oneConnectEnabled = jsonObject.getString("one_connect");
+                        String oneConnectKey = jsonObject.getString("one_connect_key");
+
+                        if (oneConnectEnabled.equals("1")) {
+                            try  {
+                                OneConnect oneConnect = new OneConnect();
+                                oneConnect.initialize(SplashScreen.this, oneConnectKey);
+                                try {
+                                    WebAPI.FREE_SERVERS = oneConnect.fetch(true);
+                                    WebAPI.PREMIUM_SERVERS = oneConnect.fetch(false);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?freeServers").build();
+                            response = okHttpClient.newCall(request).execute();
+                            WebAPI.FREE_SERVERS = response.body().string();
+
+                            request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?proServers").build();
+                            response = okHttpClient.newCall(request).execute();
+                            WebAPI.PREMIUM_SERVERS = response.body().string();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    request = new Request.Builder().url(WebAPI.ADMIN_PANEL_API+"includes/api.php?admob").build();
+                    response = okHttpClient.newCall(request).execute();
+                    String body = response.body().string();
+                    try {
+                        JSONArray jsonArray = new JSONArray(body);
+                        for (int i=0; i < jsonArray.length();i++){
+                            JSONObject object = (JSONObject) jsonArray.get(0);
+                            WebAPI.ADMOB_ID = object.getString("admobID");
+                            WebAPI.ADMOB_BANNER = object.getString("bannerID");
+                            WebAPI.ADMOB_INTERSTITIAL = object.getString("interstitialID");
+                            WebAPI.ADMOB_NATIVE = object.getString("nativeID");
+                            WebAPI.ADMOB_REWARD_ID = object.getString("rewardID");
+                            WebAPI.ADS_TYPE = object.getString("adType");
+
+                        }
+                        try {
+                            ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                            Bundle bundle = applicationInfo.metaData;
+                            applicationInfo.metaData.putString("com.google.android.gms.ads.APPLICATION_ID",WebAPI.ADMOB_ID);
+                            String apiKey = bundle.getString("com.google.android.gms.ads.APPLICATION_ID");
+                            Log.d("AppID","The saved id is "+WebAPI.ADMOB_ID);
+                            Log.d("AppID","The saved id is "+apiKey);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (IOException e) {
+                    Log.v("Kabila",e.toString());
+                    e.printStackTrace();
+                }
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!WebAPI.ADS_TYPE.equals("")) {
+                            Log.v("ADSTYPE", "splashscreen " + WebAPI.ADS_TYPE);
+                            splashScreen();
+                        }
+                    }
+                });
+
+            }
+        }).start();
+
+    }
+
 
     public void splashScreen() {
 

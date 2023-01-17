@@ -6,7 +6,6 @@ import android.view.View;
 import com.google.android.material.tabs.TabLayout;
 import com.willdev.openvpn.R;
 import com.willdev.openvpn.adapter.TabAdapter;
-import com.willdev.openvpn.api.WebAPI;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,14 +27,7 @@ public class Servers extends AppCompatActivity
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         TabAdapter adapter = new TabAdapter(getSupportFragmentManager());
 
-        if (WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_FACEBOOK_ADS)) {
-
-            adapter.addFragment(new FreeServersFragment(), "Free Servers");
-
-        } else {
-
-            adapter.addFragment(new FreeServersFragmentAdMob(), "Free Servers");
-        }
+        adapter.addFragment(new FreeServersFragmentAdMob(), "Free Servers");
 
         adapter.addFragment(new VipServersFragment(), "Premium Servers");
         viewPager.setAdapter(adapter);

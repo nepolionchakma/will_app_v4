@@ -2,7 +2,7 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation" >
-    <string name="app_name">Will VPN</string>
+    <string name="app_name">Will VPN App</string>
     <string name="navigation_drawer_open">drawer open</string>
     <string name="navigation_drawer_close">drawer close</string>
     <string name="vpn_process">31674741</string>
@@ -83,7 +83,7 @@
 
     <string name="skip">Skip</string>
     <string name="got_it">GOT IT</string>
-    <string name="welcome_title_one">VPNClue App</string>
+    <string name="welcome_title_one">Speed Vpn Pro</string>
     <string name="welcome_title_two">Reward Points</string>
     <string name="welcome_title_three">Unlimited Bandwidth Servers.</string>
     <string name="welcome_description_one"><![CDATA[Refer and Earn the Points by sharing this application with your friends. ]]></string>

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Constant {
 
-    public static final String My_api = "https://vpn.willdev.in/";
+    public static final String My_api = "https://will-vpn.willdev.in/";
 
 
     public static String url = My_api + "api.php";

@@ -1,15 +1,23 @@
 package com.willdev.openvpn.view;
 
+import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
+import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.sdk.AppLovinMediationProvider;
+import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkUtils;
 import com.appodeal.ads.Appodeal;
 import com.appodeal.ads.NativeCallbacks;
 import com.appodeal.ads.NativeIconView;
 import com.appodeal.ads.NativeMediaView;
+import com.unity3d.ads.IUnityAdsInitializationListener;
 import com.unity3d.ads.IUnityAdsListener;
 import com.unity3d.ads.UnityAds;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -91,6 +99,7 @@ import com.startapp.sdk.ads.banner.Mrec;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
@@ -107,10 +116,10 @@ import cz.msebera.android.httpclient.StatusLine;
 import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
-import de.blinkt.openvpn.OpenVpnApi;
-import de.blinkt.openvpn.core.OpenVPNService;
-import de.blinkt.openvpn.core.OpenVPNThread;
-import de.blinkt.openvpn.core.VpnStatus;
+import top.oneconnectapi.app.OpenVpnApi;
+import top.oneconnectapi.app.core.OpenVPNService;
+import top.oneconnectapi.app.core.OpenVPNThread;
+import top.oneconnectapi.app.core.VpnStatus;
 
 import static android.app.Activity.RESULT_OK;
 import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
@@ -162,26 +171,28 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
             frameLayout = binding.flAdplaceholder;
             ipConnection = mView.findViewById(R.id.tv_ip_address);
 
-            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                    Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
-                    for (String adapterClass : statusMap.keySet()) {
-                        AdapterStatus status = statusMap.get(adapterClass);
-                        Log.d("MyApp", String.format(
-                                "Adapter name: %s, Description: %s, Latency: %d",
-                                adapterClass, status.getDescription(), status.getLatency()));
-                    }
-
-                    initializeAll();
-                }
-            });
-
         } else {
             if (mView.getParent() != null) {
                 ((ViewGroup) mView.getParent()).removeView(mView);
             }
         }
+
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
+                for (String adapterClass : statusMap.keySet()) {
+                    AdapterStatus status = statusMap.get(adapterClass);
+                    Log.d("MyApp", String.format(
+                            "Adapter name: %s, Description: %s, Latency: %d",
+                            adapterClass, status.getDescription(), status.getLatency()));
+                }
+
+
+            }
+        });
+
+        initializeAll();
         showIP();
 
         return mView;
@@ -197,6 +208,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
         //Todo add native ad
         if (WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_ADMOB))
         {
+            Log.v("ADMOBCHECK", "true");
             AdRequest adRequest = new AdRequest.Builder().build();
 
             InterstitialAd.load(getActivity(),WebAPI.ADMOB_INTERSTITIAL, adRequest,
@@ -253,6 +265,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                         @Override
                         public void onNativeAdLoaded(@NonNull com.google.android.gms.ads.nativead.NativeAd nativeAd) {
                             frameLayout.setVisibility(View.VISIBLE);
+                            Log.v("ADMOBNATIVE", "ad loaded");
                             NativeAdView adView = (NativeAdView) getLayoutInflater()
                                     .inflate(R.layout.ad_unifined, null);
                             if ((!Config.vip_subscription && !Config.all_subscription))
@@ -260,13 +273,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                                 populateUnifiedNativeAdView(nativeAd, adView);
                                 frameLayout.removeAllViews();
                                 frameLayout.addView(adView);
+                                frameLayout.setVisibility(View.VISIBLE);
                             }
                         }
                     })
                     .withAdListener(new AdListener() {
                         @Override
                         public void onAdFailedToLoad(LoadAdError adError) {
-                            // Handle the failure by logging, altering the UI, and so on.
+                            Log.v("ADMOBNATIVE", "error: " + adError.toString());
                         }
                     })
                     .withNativeAdOptions(new NativeAdOptions.Builder()
@@ -331,6 +345,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
         }
         else if (WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_FACEBOOK_ADS))
         {
+            Log.d("FACEBOOKAD", "fb");
             com.facebook.ads.InterstitialAd mInterstitialAd = new  com.facebook.ads.InterstitialAd(getActivity(), WebAPI.ADMOB_INTERSTITIAL);
             com.facebook.ads.InterstitialAdListener interstitialAdListener = new com.facebook.ads.InterstitialAdListener() {
                 @Override
@@ -350,7 +365,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                     }
                     else
                     {
-                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        Log.d("FACEBOOKAD", "The interstitial wasn't loaded yet.");
                     }
                 }
 
@@ -388,8 +403,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                 @Override
                 public void onError(Ad ad, AdError adError)
                 {
-                    Log.w("AdLoader", WebAPI.ADMOB_NATIVE);
-                    Log.w("AdLoader", "onAdFailedToLoad" + adError.getErrorMessage());
+                    Log.e("FACEBOOKAD", WebAPI.ADMOB_NATIVE);
+                    Log.e("FACEBOOKAD", "onAdFailedToLoad" + adError.getErrorMessage());
                 }
 
                 @Override
@@ -506,6 +521,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
             mrecParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
             frameLayout.addView(startAppMrec, mrecParameters);
+            if ((!Config.vip_subscription && !Config.all_subscription))
+            {
+                frameLayout.setVisibility(View.VISIBLE);
+            }
 
             //LOAD INTERSTITIAL
             startAppAd = new StartAppAd(getContext());
@@ -668,18 +687,56 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                 }
             });
             */
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
-            BannerView banner = new BannerView(getActivity(), WebAPI.ADMOB_BANNER, new UnityBannerSize(400, 400));
-            banner.load();
+            UnityAds.initialize(getActivity(), WebAPI.ADMOB_ID,true, new IUnityAdsInitializationListener() {
+                @Override
+                public void onInitializationComplete() {
+                    Log.v("CHECKUNITY", "Unity Ads initialization complete");
+                    RelativeLayout.LayoutParams bannerParameters =
+                            new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    bannerParameters.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    bannerParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-            RelativeLayout.LayoutParams bannerParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-            bannerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            bannerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    BannerView bottomBanner = new BannerView((Activity) getContext(), "bannerads", new UnityBannerSize(400, 400));
+                    bottomBanner.setListener(new BannerView.IListener() {
+                        @Override
+                        public void onBannerLoaded(BannerView bannerView) {
+                            Log.v("CHECKUNITY", " banner ad loaded");
+                        }
 
-            frameLayout.addView(banner, bannerParams);
+                        @Override
+                        public void onBannerClick(BannerView bannerView) {
+
+                        }
+
+                        @Override
+                        public void onBannerFailedToLoad(BannerView bannerView, BannerErrorInfo bannerErrorInfo) {
+                            Log.v("CHECKUNITY", "error " + bannerErrorInfo.errorMessage);
+                        }
+
+                        @Override
+                        public void onBannerLeftApplication(BannerView bannerView) {
+
+                        }
+                    });
+                    bottomBanner.load();
+
+                    frameLayout.addView(bottomBanner, bannerParameters);
+
+                    if ((!Config.vip_subscription && !Config.all_subscription))
+                    {
+                        frameLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+                    Log.e("CHECKUNITY", "Unity Ads initialization failed: [" + error + "] " + message);
+                }
+            });
 
             ((MainActivity) getActivity()).currentVipServer.observe(getActivity(), new Observer<Server>()
             {
@@ -696,10 +753,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                         if ((!Config.vip_subscription && !Config.all_subscription))
                         {
                             prepareVpn();
-
-                            if (UnityAds.isReady (WebAPI.ADMOB_INTERSTITIAL)) {
-                                UnityAds.show (getActivity(), WebAPI.ADMOB_INTERSTITIAL);
-                            }
                         }
                         else
                         {
@@ -726,8 +779,62 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
             });
         } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APV)) {
 
+            AppLovinSdk.getInstance(getContext()).getSettings().setVerboseLogging(true);
+
+            AppLovinSdk.getInstance(getContext()).setMediationProvider( AppLovinMediationProvider.MAX );
+            AppLovinSdk.getInstance(getContext()).initializeSdk( new AppLovinSdk.SdkInitializationListener()
+            {
+                @Override
+                public void onSdkInitialized(AppLovinSdkConfiguration config) {
+                    Log.v("APPLOVIN", " initialized");
+
+                }
+            } );
+
+            Log.v("APPLOVIN", "true");
             MaxAdView adView = new MaxAdView(WebAPI.ADMOB_NATIVE, MaxAdFormat.MREC, getActivity());
             adView.setId(ViewCompat.generateViewId());
+            adView.setListener(new MaxAdViewAdListener() {
+                @Override
+                public void onAdExpanded(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdCollapsed(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdLoaded(MaxAd ad) {
+                    Log.v("APPLOVIN", "ad loaded");
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdHidden(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(MaxAd ad) {
+
+                }
+
+                @Override
+                public void onAdLoadFailed(String adUnitId, MaxError error) {
+                    Log.e("APPLOVIN", "error: " + error.toString());
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                    Log.e("APPLOVIN", "error: " + error.toString());
+                }
+            });
 
             final int widthPx = AppLovinSdkUtils.dpToPx(getContext(), 300);
             final int heightPx = AppLovinSdkUtils.dpToPx(getContext(), 250);
@@ -746,7 +853,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
             adView.loadAd();
 
             frameLayout.addView(adView, bannerParams);
-
+            if ((!Config.vip_subscription && !Config.all_subscription))
+            {
+                frameLayout.setVisibility(View.VISIBLE);
+            }
 
             ((MainActivity) getActivity()).currentVipServer.observe(getActivity(), new Observer<Server>()
             {
@@ -787,7 +897,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
                     startActivity(intent);
                 }
             });
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
             if(WebAPI.nativeAd == null) {
 
@@ -1059,11 +1169,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.vpnBtn: {
-               if (vpnStart) {
-                    confirmDisconnect();
+                if(server.getCountry().equals("Select Country")) {
+                    showToast("Please select a server first");
                 } else {
-                    prepareVpn();
+                    if (vpnStart) {
+                        confirmDisconnect();
+                    } else {
+                        prepareVpn();
+                    }
                 }
+
                 break;
             }
 
@@ -1242,6 +1357,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
+                Log.v("CHECKSTATE", intent.getStringExtra("state"));
                 setStatus(intent.getStringExtra("state"));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1282,10 +1398,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
 
 
     public void updateCurrentVipServerIcon(String serverIcon) {
-        Glide.with(getActivity())
-                .load(serverIcon)
-                .into(binding.selectedServerIcon);
-
+        if(!server.getCountry().equals("Select Country")) {
+            Glide.with(getActivity())
+                    .load(serverIcon)
+                    .into(binding.selectedServerIcon);
+        }
     }
 
 
@@ -1400,8 +1517,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
         List<String> skus = new ArrayList<>();
 
         if (purchases != null) {
+            int i = 0;
             for (Purchase purchase : purchases) {
-                skus.add(purchase.getSku());
+                skus.add(purchase.getSkus().get(i));
+                Log.v("CHECKBILLING", purchase.getSkus().get(i));
+                i++;
             }
 
             if (skus.contains(vpn1) ||

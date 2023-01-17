@@ -70,6 +70,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.onesignal.OneSignal;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.unity3d.ads.IUnityAdsInitializationListener;
 import com.unity3d.ads.UnityAds;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.v("ADS TYPE", " " + WebAPI.ADS_TYPE);
+        Log.v("ADSTYPE", "mainactivity " + WebAPI.ADS_TYPE);
 
         //INITIALIZE ADS SDK
         if(WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_FACEBOOK_ADS) || WebAPI.ADS_TYPE.equals(WebAPI.ADS_TYPE_ADMOB)) {
@@ -109,15 +110,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
                 }
             });
-
+            AdSettings.addTestDevice("06518f22-9f3f-40f4-97bc-f91ae11087e2");
             AudienceNetworkAds.initialize(this);
         }
 
         else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_STR))
             StartAppSDK.setTestAdsEnabled(true);
 
-        else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT))
-            UnityAds.initialize (this, WebAPI.ADMOB_ID, Config.UNITY_TEST_MODE);
+        else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
+
+            UnityAds.initialize(this, WebAPI.ADMOB_ID,true, new IUnityAdsInitializationListener() {
+                @Override
+                public void onInitializationComplete() {
+                    Log.v("UNITYADTEST", "Unity Ads initialization complete");
+
+                }
+
+                @Override
+                public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+                    Log.e("UNITYADTEST", "Unity Ads initialization failed: [" + error + "] " + message);
+                }
+            });
+        }
 
         else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APV)){
 

@@ -55,8 +55,9 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.adsbase.adlisteners.VideoListener;
-import com.unity3d.ads.IUnityAdsListener;
+import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsShowOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,7 +134,7 @@ public class VipServersFragment extends Fragment implements VipServerAdapter.OnS
             for (int i=0; i < jsonArray.length();i++){
                 JSONObject object = (JSONObject) jsonArray.get(i);
                 servers.add(new Server(object.getString("serverName"),
-                        object.getString("flagURL"),
+                        object.getString("flag_url"),
                         object.getString("ovpnConfiguration"),
                         object.getString("vpnUserName"),
                         object.getString("vpnPassword")
@@ -261,55 +262,44 @@ public class VipServersFragment extends Fragment implements VipServerAdapter.OnS
 */
                     Toast.makeText(activity, "ads Not Available Or Buy Subscription", Toast.LENGTH_SHORT).show();
 
-                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
-                    if (UnityAds.isReady (WebAPI.ADMOB_REWARD_ID)) {
-                        UnityAds.show (activity, WebAPI.ADMOB_REWARD_ID);
+                    UnityAds.show(getActivity(), "rewardedVideo", new UnityAdsShowOptions(), new IUnityAdsShowListener() {
+                        @Override
+                        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                            Log.e("CHECKUNITY", "onUnityAdsShowFailure: " + error + " - " + message);
+                            Toast.makeText(activity, "ads Not Available Or Buy Subscription", Toast.LENGTH_SHORT).show();
+                        }
 
-                        UnityAds.addListener(new IUnityAdsListener() {
-                            @Override
-                            public void onUnityAdsReady(String s) {
+                        @Override
+                        public void onUnityAdsShowStart(String placementId) {
+                            Log.v("CHECKUNITY", "onUnityAdsShowStart: " + placementId);
+                        }
 
-                            }
+                        @Override
+                        public void onUnityAdsShowClick(String placementId) {
+                            Log.v("CHECKUNITY","onUnityAdsShowClick: " + placementId);
+                        }
 
-                            @Override
-                            public void onUnityAdsStart(String s) {
+                        @Override
+                        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                            Log.v("CHECKUNITY","onUnityAdsShowComplete: " + placementId);
 
-                            }
+                            Intent mIntent = new Intent();
+                            mIntent.putExtra("server", serverr);
+                            mIntent.putExtra("rewardedvideo", "true");
+                            getActivity().setResult(getActivity().RESULT_OK, mIntent);
+                            getActivity().finish();
+                        }
+                    });
 
-                            @Override
-                            public void onUnityAdsFinish(String s, UnityAds.FinishState finishState) {
-
-                                if(s.equals(WebAPI.ADMOB_REWARD_ID)) {
-                                    Log.v("UNITY", " reward ad finished");
-
-                                    Intent mIntent = new Intent();
-                                    mIntent.putExtra("server", serverr);
-                                    getActivity().setResult(getActivity().RESULT_OK, mIntent);
-                                    getActivity().finish();
-                                }
-                            }
-
-                            @Override
-                            public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String s) {
-
-                                if(s.equals(WebAPI.ADMOB_REWARD_ID)) {
-                                    Log.e("UNITY", " reward ad error, " + unityAdsError.toString());
-
-                                    Toast.makeText(activity, "ads Not Available Or Buy Subscription", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    } else {
-                        Toast.makeText(activity, "ads Not Available Or Buy Subscription", Toast.LENGTH_SHORT).show();
-                    }
                 } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APV)) {
                     if (rewardedAd.isReady()) {
                         rewardedAd.showAd();
                     } else {
                         Toast.makeText(activity, "ads Not Available Or Buy Subscription", Toast.LENGTH_SHORT).show();
                     }
-                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
                     if(isRewardVideoLoaded) {
                         Log.v("APPODEAL", "reward loaded");
                         Appodeal.show(getActivity(), Appodeal.REWARDED_VIDEO);
@@ -454,7 +444,7 @@ public class VipServersFragment extends Fragment implements VipServerAdapter.OnS
         }
 
         //UNITY - PRELOADED IN MAINACTIVITY
-        else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+        else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
             progressDialog.dismiss();
         }
 
@@ -579,7 +569,7 @@ public class VipServersFragment extends Fragment implements VipServerAdapter.OnS
 
             MoPubRewardedAds.setRewardedAdListener(rewardedAdListener);
 */
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
             Appodeal.initialize(getActivity(), WebAPI.ADMOB_REWARD_ID, Appodeal.REWARDED_VIDEO);
 
             progressDialog.show();

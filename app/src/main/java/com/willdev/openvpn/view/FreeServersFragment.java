@@ -108,14 +108,14 @@ public class FreeServersFragment extends Fragment implements  NativeAdsManager.L
                 {
                     JSONObject object = (JSONObject) jsonArray.get(i);
                     mPostItemList.add(new Server(object.getString("serverName"),
-                            object.getString("flagURL"),
+                            object.getString("flag_url"),
                             object.getString("ovpnConfiguration"),
                             object.getString("vpnUserName"),
                             object.getString("vpnPassword")
                     ));
 
                     randomServers.add(new Server(object.getString("serverName"),
-                            object.getString("flagURL"),
+                            object.getString("flag_url"),
                             object.getString("ovpnConfiguration"),
                             object.getString("vpnUserName"),
                             object.getString("vpnPassword")

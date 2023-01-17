@@ -78,7 +78,7 @@ public class FreeServersFragmentAdMob extends Fragment implements FreeServerAdap
         if(WebAPI.nativeAd == null) {
             Appodeal.initialize(getActivity(), WebAPI.ADMOB_NATIVE, Appodeal.NATIVE);
 
-            if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+            if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
                 Appodeal.setNativeCallbacks(new NativeCallbacks() {
                     @Override
@@ -174,14 +174,14 @@ public class FreeServersFragmentAdMob extends Fragment implements FreeServerAdap
             for (int i=0; i < jsonArray.length();i++){
                 JSONObject object = (JSONObject) jsonArray.get(i);
                 servers.add(new Server(object.getString("serverName"),
-                        object.getString("flagURL"),
+                        object.getString("flag_url"),
                         object.getString("ovpnConfiguration"),
                         object.getString("vpnUserName"),
                         object.getString("vpnPassword")
                 ));
 
                 randomServers.add(new Server(object.getString("serverName"),
-                        object.getString("flagURL"),
+                        object.getString("flag_url"),
                         object.getString("ovpnConfiguration"),
                         object.getString("vpnUserName"),
                         object.getString("vpnPassword")
@@ -190,7 +190,7 @@ public class FreeServersFragmentAdMob extends Fragment implements FreeServerAdap
                 Log.v("Servers",object.getString("vpnUserName"));
                 Log.v("Servers",object.getString("vpnPassword"));
                 Log.v("Servers",object.getString("serverName"));
-                Log.v("Servers",object.getString("flagURL"));
+                Log.v("Servers",object.getString("flag_url"));
                 Log.v("Servers",object.getString("ovpnConfiguration"));
                 if((i % 2 == 0)&&(i > 0)){
                     if (!Config.vip_subscription && !Config.all_subscription) {
@@ -275,7 +275,7 @@ public class FreeServersFragmentAdMob extends Fragment implements FreeServerAdap
                         getActivity().finish();
                     }
                 });
-            } else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+            } else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
                 if (UnityAds.isReady (WebAPI.ADMOB_REWARD_ID)) {
                     UnityAds.show (getActivity(), WebAPI.ADMOB_REWARD_ID);
@@ -377,7 +377,7 @@ public class FreeServersFragmentAdMob extends Fragment implements FreeServerAdap
 
                 rewardedAd.loadAd();
 
-            } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+            } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
                 if(!WebAPI.rewardedVideoLoaded) {
                     Appodeal.initialize(getActivity(), WebAPI.ADMOB_REWARD_ID, Appodeal.REWARDED_VIDEO);

@@ -37,7 +37,7 @@
 
 
                     <LinearLayout
-                        android:layout_width="170dp"
+                        android:layout_width="190dp"
                         android:layout_height="55dp"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="0dp"
@@ -393,7 +393,7 @@
                         android:visibility="visible">
 
                         <ImageView
-                            android:layout_width="35.0dip"
+                            android:layout_width="30dp"
                             android:layout_height="35.0dip"
                             app:srcCompat="@drawable/ic_power" />
 
@@ -666,7 +666,7 @@
                                 android:id="@+id/selectedServerIcon"
                                 android:layout_width="30.0dip"
                                 android:layout_height="30.0dip"
-                                android:src="@drawable/japan" />
+                                android:src="@drawable/ic_baseline_language_24" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -697,7 +697,7 @@
                                 android:layout_gravity="center"
                                 android:layout_margin="1.0dip"
                                 android:layout_marginEnd="4.0dip"
-                                android:tint="@color/white"
+                                app:tint="@color/white"
                                 android:src="@drawable/ic_drop_down" />
                         </LinearLayout>
                     </LinearLayout>

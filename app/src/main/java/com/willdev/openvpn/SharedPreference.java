@@ -54,8 +54,8 @@ public class SharedPreference {
     public Server getServer() {
 
         Server server = new Server(
-                mPreference.getString(SERVER_COUNTRY,"Japan"),
-                mPreference.getString(SERVER_FLAG,getImgURL(R.drawable.japan)),
+                mPreference.getString(SERVER_COUNTRY,"Select Country"),
+                mPreference.getString(SERVER_FLAG,getImgURL(R.drawable.ic_baseline_language_24)),
                 mPreference.getString(SERVER_OVPN,"japan.ovpn"),
                 mPreference.getString(SERVER_OVPN_USER,"vpn"),
                 mPreference.getString(SERVER_OVPN_PASSWORD,"vpn")
@@ -66,8 +66,8 @@ public class SharedPreference {
     public Server getVipServer() {
 
         return new Server(
-                mPreference.getString(SERVER_COUNTRY_VIP,"Japan"),
-                mPreference.getString(SERVER_FLAG_VIP,getImgURL(R.drawable.japan)),
+                mPreference.getString(SERVER_COUNTRY_VIP,"Select Country"),
+                mPreference.getString(SERVER_FLAG_VIP,getImgURL(R.drawable.ic_baseline_language_24)),
                 mPreference.getString(SERVER_OVPN_VIP,"japan.ovpn"),
                 mPreference.getString(SERVER_OVPN_USER_VIP,"vpn"),
                 mPreference.getString(SERVER_OVPN_PASSWORD_VIP,"vpn")

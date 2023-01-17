@@ -496,7 +496,7 @@ public class Method {
                     progressDialog.dismiss();
                 }
             });
-        } else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+        } else if(WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
             if (UnityAds.isReady (WebAPI.ADMOB_REWARD_ID)) {
                 UnityAds.show (activity, WebAPI.ADMOB_REWARD_ID);
@@ -589,7 +589,7 @@ public class Method {
             });
 
             rewardedAd.loadAd();
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
             if(!WebAPI.rewardedVideoLoaded) {
                 Appodeal.initialize(activity, WebAPI.ADMOB_REWARD_ID, Appodeal.REWARDED_VIDEO);
@@ -829,7 +829,7 @@ public class Method {
                     progressDialog.dismiss();
                 }
             });
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
             if (UnityAds.isReady (WebAPI.ADMOB_INTERSTITIAL)) {
                 UnityAds.show (activity, WebAPI.ADMOB_INTERSTITIAL);
             }
@@ -840,7 +840,7 @@ public class Method {
 
             callVideoAdData(type);
             progressDialog.dismiss();
-        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+        } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
             callVideoAdData(type);
             progressDialog.dismiss();
 /*
@@ -1038,7 +1038,7 @@ public class Method {
                                         .withAdListener(interstitialAdListener)
                                         .build());
 
-                    } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+                    } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
                         if (UnityAds.isReady (WebAPI.ADMOB_INTERSTITIAL)) {
                             UnityAds.show (activity, WebAPI.ADMOB_INTERSTITIAL);
                         }
@@ -1048,7 +1048,7 @@ public class Method {
 
                         onClick.position(position, title, type, statusType, id, tag);
                         progressDialog.dismiss();
-                    } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+                    } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
 
                         onClick.position(position, title, type, statusType, id, tag);
                         progressDialog.dismiss();
@@ -1095,7 +1095,7 @@ public class Method {
                     bannerParameters.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                     linearLayout.addView(startAppBanner, bannerParameters);
 
-                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UT)) {
+                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_UNITY)) {
 
                     BannerView banner = new BannerView(activity, WebAPI.ADMOB_BANNER, new UnityBannerSize(320, 50));
                     banner.load();
@@ -1117,7 +1117,7 @@ public class Method {
                     adView.setBackgroundColor(Color.TRANSPARENT);
                     adView.loadAd();
                     linearLayout.addView(adView);
-                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APD)) {
+                } else if (WebAPI.ADS_TYPE.equals(WebAPI.TYPE_APPODEAL)) {
                     if (!WebAPI.bannerLoaded) {
                         Appodeal.initialize(activity, WebAPI.ADMOB_BANNER, Appodeal.BANNER_BOTTOM);
                         WebAPI.bannerLoaded = true;

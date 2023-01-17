@@ -3,6 +3,7 @@ package com.willdev.openvpn.view;
 import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -213,8 +214,11 @@ public class PurchaseActivity extends AppCompatActivity implements PurchasesUpda
         List<String> skus = new ArrayList<>();
 
         if (purchases != null) {
+            int i = 0;
             for (Purchase purchase : purchases) {
-                skus.add(purchase.getSku());
+                skus.add(purchase.getSkus().get(i));
+                Log.v("CHECKBILLING", purchase.getSkus().get(i));
+                i++;
             }
 
             if (skus.contains(vpn1) ||
