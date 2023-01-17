@@ -4,7 +4,40 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51d10e0c-e165-4772-9b77-3c5e692cb1d9" name="Changes" comment="" />
+    <list default="true" id="51d10e0c-e165-4772-9b77-3c5e692cb1d9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/SmoothCheckBox-master/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/SmoothCheckBox-master/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wheell/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Wheell/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/japan.ovpn" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/japan.ovpn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/SharedPreference.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/SharedPreference.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/adapter/FreeServerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/adapter/FreeServerAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/api/WebAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/api/WebAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/activity/SplashScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/activity/SplashScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/util/util/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/util/util/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/util/util/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/fromanother/util/util/Method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/utils/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/utils/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/FreeServersFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/FreeServersFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/FreeServersFragmentAdMob.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/FreeServersFragmentAdMob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/MainFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/MainFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/PurchaseActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/PurchaseActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/Servers.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/Servers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/VipServersFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/willdev/openvpn/view/VipServersFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_splace_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_splace_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_splash_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_splash_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imagepicker/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/imagepicker/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
